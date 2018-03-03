@@ -1,7 +1,11 @@
 package com.sda.streams;
 
+import com.sda.streams.optional.Book;
+import com.sda.streams.optional.Library;
+
 import java.util.*;
-import java.util.function.Predicate;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -109,12 +113,57 @@ public class Main {
 //        };
 
 
+        // Zadanie A
         List<Programmer> wynik = programmers.stream()
                 .filter(XXProgrammer -> XXProgrammer.getPerson().isMezczyzna())
                 .collect(Collectors.toList());
 
         System.out.println(wynik);
         wynik.add(new Programmer(null, null));
+
+//        Zadanie B
+        List<Programmer> pelnoletnieKobiety = programmers.stream()
+                // poniższa linia zamiast dwóch filtrów
+//                .filter(XXProgrammer -> !XXProgrammer.getPerson().isMezczyzna() && XXProgrammer.getPerson().getWiek() >= 18)
+                .filter(XXProgrammer -> !XXProgrammer.getPerson().isMezczyzna())
+                .filter(XXProgrammer -> XXProgrammer.getPerson().getWiek() >= 18)
+                .collect(Collectors.toList());
+
+
+        // Zadanie C
+        Optional<Programmer> optionalJacek = programmers.stream()
+                .filter(programmer -> programmer.getPerson().getImie().equalsIgnoreCase("jacek"))
+                .findFirst();
+
+        System.out.println();
+        System.out.println();
+        // wypisz jacka tylko jeśli został zwrócony (wypisz obiekt PROGRAMMER - toString na programmer)
+        optionalJacek.ifPresent(jacek -> System.out.println(jacek));
+
+
+        System.out.println();
+        System.out.println();
+        // wypisz optional (niezależnie czy zawiera wartość) - toString na Optional
+        System.out.println(optionalJacek);
+
+
+        // Zadanie C
+//        Function<Programmer, Person> mapper = new Function<Programmer, Person>() {
+//            @Override
+//            public Person apply(Programmer programmer) {
+//                return programmer.getPerson();
+//            }
+//        };
+//        Optional<Person> optionalPersonJacek = programmers.stream()
+//                .map(mapper)
+//                .filter(programmer -> programmer.getPerson().getImie().equalsIgnoreCase("jacek"))
+//                .findFirst();
+
+        // *********************
+        Optional<Person> optionalPersonJacek = programmers.stream()
+                .map(programmer -> programmer.getPerson())  // mapowanie, zwraca stream Person'ów
+                .filter(person -> person.getImie().equalsIgnoreCase("jacek")) // z personów filtruje jacka
+                .findFirst();
 
     }
 
